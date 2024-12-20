@@ -89,7 +89,10 @@ update_and_clean
    ```bash
    sudo ./security_config.sh
    ```
-
+4. It is also possible to run script without needing to download
+    ```bash
+        curl https://raw.githubusercontent.com/lefht/securepi/refs/heads/main/securepi.sh | ssh pi_usr@hostip 'sudo bash -s'
+    ```
 ### Example Output
 
 When running the script, you should see logs indicating the progress and completion of each security configuration step:
