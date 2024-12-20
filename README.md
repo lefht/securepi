@@ -123,7 +123,8 @@ When running the script, you should see logs indicating the progress and complet
 
 ## Conclusion
 
-This script simplifies the process of securing a Linux-based system by automating common security configurations. By running it, you ensure your system is protected with a firewall, fail2ban, automatic security updates, and a secure SSH configuration.
-```
-
-Let me know if you need further adjustments or additions to the documentation!
+This script simplifies the process of securing a Raspberry PIs by automating common security configurations. By running it, you ensure your system is protected with a:
+- firewall
+- fail2ban
+- automatic security updates
+- secure SSH configuration.
