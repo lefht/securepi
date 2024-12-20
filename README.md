@@ -1,6 +1,3 @@
-Here's the documentation for the script in Markdown format:
-
-
 # Security Configuration Script
 
 This script is designed to perform various security configurations on a Linux-based system, specifically for enabling and configuring **UFW (Uncomplicated Firewall)**, **Fail2Ban**, **Unattended Upgrades**, and **SSH**. It ensures that your system is securely configured with minimal manual intervention.
