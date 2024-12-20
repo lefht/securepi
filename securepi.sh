@@ -1,6 +1,8 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 set -euo pipefail
+
+current_user=${SUDO_USER:-$(whoami)}
 
 if [ "$EUID" -ne 0 ]; then
     echo "Error: Please run this script as root."
@@ -131,8 +133,6 @@ configure_sshd() {
     log_message "Configuring SSH to allow only the current user..."
 
     # Extract the current username
-    local current_user
-    current_user=$(whoami)
 
     # Check if the current user is already allowed
     if grep -q "^AllowUsers.*\b$current_user\b" /etc/ssh/sshd_config; then
