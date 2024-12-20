@@ -80,11 +80,11 @@ update_and_clean
 1. Save the script to a file, for example, `security_config.sh`.
 2. Give it executable permissions:
    ```bash
-   chmod +x security_config.sh
+   chmod +x securepi.sh
    ```
 3. Run the script as root:
    ```bash
-   sudo ./security_config.sh
+   sudo ./securepi.sh
    ```
 4. It is also possible to run script without needing to download
     ```bash
