@@ -1,0 +1,108 @@
+---
+- name: Security Configuration Playbook
+  hosts: all
+  become: true  # Run the tasks as root
+  vars:
+    current_user: "{{ ansible_user }}"
+    distro_codename: "{{ ansible_distribution_release | lower }}"
+
+  tasks:
+
+    - name: Reset UFW to avoid conflicts
+      ansible.builtin.command:
+        cmd: ufw --force reset
+      ignore_errors: yes
+
+    - name: Allow ssh, http, and https ports through UFW
+      ansible.builtin.ufw:
+        rule: allow
+        port: 22
+        proto: tcp
+
+    - name: Enable UFW
+      ansible.builtin.command:
+        cmd: ufw --force enable
+
+
+    - name: Enable UFW logging
+      ansible.builtin.command:
+        cmd: ufw logging on
+
+    - name: Check if /var/log/auth.log exists
+      ansible.builtin.stat:
+        path: /var/log/auth.log
+      register: auth_log_stat
+
+    - name: Create /var/log/auth.log if it does not exist
+      ansible.builtin.file:
+        path: /var/log/auth.log
+        state: touch
+      when: not auth_log_stat.stat.exists
+
+    - name: Install Fail2Ban
+      ansible.builtin.package:
+        name: fail2ban
+        state: present
+
+    - name: Configure Fail2Ban jail.local file
+      ansible.builtin.copy:
+        dest: /etc/fail2ban/jail.local
+        content: |
+          [DEFAULT]
+          bantime = 1h
+          banaction = ufw
+
+          [sshd]
+          enabled = true
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Restart Fail2Ban service
+      ansible.builtin.systemd:
+        name: fail2ban
+        state: restarted
+
+    - name: Install unattended-upgrades package
+      ansible.builtin.package:
+        name: unattended-upgrades
+        state: present
+
+    - name: Configure unattended-upgrades origins
+      ansible.builtin.lineinfile:
+        path: /etc/apt/apt.conf.d/50unattended-upgrades
+        line: '"origin=Raspbian,codename={{ distro_codename }},label=Raspbian";'
+        create: yes
+        insertafter: EOF
+      notify: Restart unattended-upgrades
+
+    - name: Enable unattended-upgrades service
+      ansible.builtin.systemd:
+        name: unattended-upgrades
+        enabled: yes
+        state: started
+
+    - name: Configure SSH to allow only the current user
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        line: "AllowUsers {{ current_user }}"
+        create: yes
+        insertafter: EOF
+
+    - name: Restart SSH service
+      ansible.builtin.systemd:
+        name: ssh
+        state: restarted
+
+    - name: Update and upgrade the system
+      ansible.builtin.apt:
+        update_cache: yes
+        # upgrade: dist
+        autoremove: yes
+        autoclean: yes
+
+  handlers:
+    - name: Restart unattended-upgrades
+      ansible.builtin.systemd:
+        name: unattended-upgrades
+        state: restarted

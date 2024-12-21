@@ -77,6 +77,8 @@ update_and_clean
 
 ## How to Use
 
+### Option 1: Run the Script Directly
+
 1. Save the script to a file, for example, `security_config.sh`.
 2. Give it executable permissions:
    ```bash
@@ -86,34 +88,24 @@ update_and_clean
    ```bash
    sudo ./securepi.sh
    ```
-4. It is also possible to run script without needing to download
-    ```bash
-        curl https://raw.githubusercontent.com/lefht/securepi/refs/heads/main/securepi.sh | ssh pi_usr@hostip 'sudo bash -s'
-    ```
-### Example Output
+4. It is also possible to run the script without needing to download:
+   ```bash
+   curl https://raw.githubusercontent.com/lefht/securepi/refs/heads/main/securepi.sh | ssh pi_usr@hostip 'sudo bash -s'
+   ```
 
-When running the script, you should see logs indicating the progress and completion of each security configuration step:
-```
-[INFO] Starting security configuration...
-[INFO] Resetting UFW to avoid conflicts...
-[INFO] Enabling UFW...
-[INFO] Adding rules for SSH, HTTP, and HTTPS...
-[INFO] Enabling UFW logging...
-[INFO] UFW configuration completed successfully.
-[INFO] Checking if /var/log/auth.log exists...
-[INFO] Installing Fail2Ban...
-[INFO] Fail2Ban configured successfully.
-[INFO] Installing unattended-upgrades...
-[INFO] Enabling unattended-upgrades service...
-[INFO] Unattended-upgrades configured successfully.
-[INFO] Configuring SSH to allow only the current user...
-[INFO] User wehelie added to AllowUsers in /etc/ssh/sshd_config.
-[INFO] Restarting SSH service...
-[INFO] SSH configuration updated successfully.
-[INFO] Updating and upgrading the system...
-[INFO] System update and upgrade completed.
-[INFO] Security configuration completed successfully.
-```
+### Option 2: Use Ansible
+
+If you prefer to use Ansible for configuration management, follow these steps:
+
+1. Ensure that Docker is installed and configured on your system.
+2. Clone the repository or ensure the `inventory` and `playbooks` directories are accessible.
+4. Add your hosts and credentials and run the following command.
+
+   ```bash
+   make run
+   ```
+
+
 
 ## Important Notes
 
@@ -123,8 +115,9 @@ When running the script, you should see logs indicating the progress and complet
 
 ## Conclusion
 
-This script simplifies the process of securing a Raspberry PIs by automating common security configurations. By running it, you ensure your system is protected with a:
+This script simplifies the process of securing a Raspberry Pi by automating common security configurations. By running it, you ensure your system is protected with a:
 - firewall
 - fail2ban
 - automatic security updates
 - secure SSH configuration.
+
